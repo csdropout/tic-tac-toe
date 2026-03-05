@@ -103,7 +103,42 @@ function GameController(playerOneName = "P1", playerOneMarker = "O", playerTwoNa
     // Start of new game
     printNewRound();
 
-    return {playRound, getActivePlayer, restart}
+    return {playRound, getActivePlayer, restart, getBoard: board.getBoard}
 }
 
-let game = GameController();
+const screenController = (() => {
+    const game = GameController();
+    const header = document.querySelector("h1.turn");
+    const boardDiv = document.querySelector("div.board");
+    // Get user input to change their player name
+    // start/restart button
+
+    // render board on page
+    const updateScreen = () => {
+        const board = game.getBoard();
+        const activePlayer = game.getActivePlayer();
+
+        header.textContent = `${activePlayer.name}'s turn.`;
+        boardDiv.textContent = "";
+        
+        board.forEach((row, rowIndex) => {
+            row.forEach((col, colIndex) => {
+                const cell = document.createElement("button");
+                cell.classList.add("cell");
+                cell.row = rowIndex;
+                cell.col = colIndex;
+                cell.textContent = col;
+                boardDiv.appendChild(cell);
+            })
+        })
+    }
+
+    boardDiv.addEventListener('click', (e) => {
+        const selectedRow = e.target.row;
+        const selectedCol = e.target.col;
+        game.playRound(selectedRow, selectedCol);
+        updateScreen(); 
+    })
+
+    updateScreen();
+})();
