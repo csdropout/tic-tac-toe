@@ -1,13 +1,21 @@
 function GameBoard() {
     const rows = 3;
     const cols = 3;
-    const board = [
+    let board = [
         ["", "", ""], 
         ["", "", ""], 
         ["", "", ""]
     ]
 
     const getBoard = () => board;
+
+    const resetBoard = () => {
+        board = [
+            ["", "", ""], 
+            ["", "", ""], 
+            ["", "", ""]
+        ]
+    }
 
     const printBoard = () => {
         console.log(board);
@@ -21,7 +29,26 @@ function GameBoard() {
         return !!board[row][col];
     }
 
-    return {getBoard, printBoard, markCell, isCellMarked}
+    const isWinner = (row, col, marker) => {
+        // check across (current row)
+        if (board[row].filter((x) => x === marker).length === 3) return true;
+
+        // check vertical (current col)
+        const verticalCol = [];
+        board.forEach((row) => {
+            verticalCol.push(row[col]);
+        });
+        if (verticalCol.filter((x) => x === marker).length === 3) return true;
+
+        // check diagonals (marker place in corners or in the middle)
+        // 2 diagonals
+        if (board[0][0] === marker && board[1][1] === marker && board[2][0]) return true;
+        if (board[2][0] === marker && board[1][1] === marker && board[0][2]) return true;
+        
+        return false;
+    }
+
+    return {getBoard, printBoard, markCell, isCellMarked, isWinner, resetBoard}
 }
 
 function GameController(playerOneName = "P1", playerOneMarker = "O", playerTwoName = "P2", playerTwoMarker = "X") {
@@ -41,7 +68,7 @@ function GameController(playerOneName = "P1", playerOneMarker = "O", playerTwoNa
     const getActivePlayer = () => activePlayer;
 
     const printNewRound = () => {
-        console.log(`${getActivePlayer().name}'s turn`);
+        console.log(`${activePlayer.name}'s turn`);
         board.printBoard();
     }
 
@@ -52,14 +79,24 @@ function GameController(playerOneName = "P1", playerOneMarker = "O", playerTwoNa
             console.log("Invalid move!")
         }
         
-        changeActivePlayer();
-        printNewRound();
+        if (board.isWinner(row, col, activePlayer.marker)) {
+            console.log(`${activePlayer.name} has won!`);
+        } else {
+            changeActivePlayer();
+            printNewRound();
+        }
+    }
+
+    const restart = () => {
+        console.log("Restarting game...");
+        board.resetBoard();
+        activePlayer = players[0];
     }
 
     // Start of new game
     printNewRound();
 
-    return {playRound, getActivePlayer}
+    return {playRound, getActivePlayer, restart}
 }
 
 let game = GameController();
