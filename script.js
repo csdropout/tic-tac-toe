@@ -55,7 +55,7 @@ function GameBoard() {
     return {getBoard, printBoard, markCell, isCellMarked, isWinner, resetBoard, isTie}
 }
 
-function GameController(playerOneName = "P1", playerOneMarker = "O", playerTwoName = "P2", playerTwoMarker = "X") {
+const gameController = ((playerOneName = "P1", playerOneMarker = "O", playerTwoName = "P2", playerTwoMarker = "X") => {
     const board = GameBoard();
     
     const players = [
@@ -104,6 +104,4 @@ function GameController(playerOneName = "P1", playerOneMarker = "O", playerTwoNa
     printNewRound();
 
     return {playRound, getActivePlayer, restart}
-}
-
-let game = GameController();
+})();
