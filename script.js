@@ -48,7 +48,11 @@ function GameBoard() {
         return false;
     }
 
-    return {getBoard, printBoard, markCell, isCellMarked, isWinner, resetBoard}
+    const isTie = () => {
+        return board.flat(Infinity).filter((x) => x === "").length === 0? true : false;
+    }
+
+    return {getBoard, printBoard, markCell, isCellMarked, isWinner, resetBoard, isTie}
 }
 
 function GameController(playerOneName = "P1", playerOneMarker = "O", playerTwoName = "P2", playerTwoMarker = "X") {
@@ -81,6 +85,8 @@ function GameController(playerOneName = "P1", playerOneMarker = "O", playerTwoNa
         
         if (board.isWinner(row, col, activePlayer.marker)) {
             console.log(`${activePlayer.name} has won!`);
+        } else if (board.isTie()) {
+            console.log("Game ended in a tie!");
         } else {
             changeActivePlayer();
             printNewRound();
