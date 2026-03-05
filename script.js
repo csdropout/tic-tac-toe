@@ -91,6 +91,7 @@ function GameController(playerOneName = "P1", playerOneMarker = "O", playerTwoNa
         console.log("Restarting game...");
         board.resetBoard();
         activePlayer = players[0];
+        printNewRound();
     }
 
     // Start of new game
